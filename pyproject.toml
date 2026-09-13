@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ttl-servo-studio"
+version = "0.1.0"
+description = "Friendly desktop testing for lightweight TTL bus servos"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{name = "Mehrdad Farimani"}]
+license = {text = "MIT"}
+dependencies = ["pyserial>=3.5,<4"]
+classifiers = ["Development Status :: 3 - Alpha", "Programming Language :: Python :: 3", "Topic :: System :: Hardware"]
+
+[project.gui-scripts]
+ttl-servo-studio = "ttl_servo_studio.app:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+ttl_servo_studio = ["_vendor/LICENSE-feetech.txt"]
