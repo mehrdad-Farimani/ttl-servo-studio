@@ -14,6 +14,20 @@ A small desktop workbench for testing lightweight **TTL serial bus servos**. Con
 - Recovers from USB and servo-power interruptions without replaying moves.
 - Releases torque for selected servos or every discovered servo.
 
+## Screenshots
+
+### Desktop workbench
+
+The macOS app before connecting hardware: servo discovery, model selection, individual targets, group controls, saved poses and position history.
+
+![TTL Servo Studio desktop workbench, disconnected](assets/app-overview.png)
+
+### Setup help
+
+Wiring, model compatibility and power-recovery guidance are available inside the app.
+
+![TTL Servo Studio setup help](assets/setup-help.png)
+
 ## Supported hardware
 
 | Model | Profile voltage range | Position range | Validation |
