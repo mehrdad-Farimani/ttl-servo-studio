@@ -43,7 +43,19 @@ Use a regulated **5 V supply** for a bus containing these two models. A profile 
 
 Sources: [Waveshare SC09](https://www.waveshare.com/wiki/SC09_Servo), [Feetech SCS0009](https://www.feetechrc.com/6v-23kg-serial-bus-steering-gear_65522.html), [Feetech SDK](https://github.com/ftservo/FTServo_Python).
 
-## Start the app
+## Download for Windows and macOS
+
+[Download the standalone preview apps](https://github.com/mehrdad-Farimani/ttl-servo-studio/releases/tag/v0.1.0) — no Python installation needed.
+
+| Platform | Download | Open after extracting |
+| --- | --- | --- |
+| Windows x64 | `TTL-Servo-Studio-Windows.zip` | `TTL-Servo-Studio.exe` inside the extracted folder; keep `_internal` beside it |
+| macOS Apple Silicon | `TTL-Servo-Studio-macOS.zip` | `TTL-Servo-Studio.app` |
+| Linux x64 | `TTL-Servo-Studio-Linux.tar.gz` | `TTL-Servo-Studio` inside the extracted folder |
+
+These are unsigned preview builds; the Mac app is not notarized. Intel Macs can use the Python source setup below. Automated tests pass on Windows and macOS; physical servo testing so far is on macOS.
+
+## Start from Python source
 
 Requires **Python 3.10+ with Tkinter**. macOS installers from [python.org](https://www.python.org/downloads/macos/) include Tkinter. On Debian/Ubuntu, install `python3-tk` and `python3-venv` from your distribution. Windows users can use the standard Python installer with Tcl/Tk enabled.
 
@@ -76,7 +88,7 @@ The `ttl-servo-studio` command is also installed in that environment. No cloud a
 
 ### Standalone builds
 
-Maintainers can run **Actions → Build desktop apps → Run workflow** to produce macOS, Windows and Linux artifacts. These builds are unsigned: they are not notarized by Apple or signed by Microsoft. This early release does not claim certified installers. Python source launch is available above.
+Maintainers can run **Actions → Build desktop apps → Run workflow** to produce macOS, Windows and Linux archives. The optional publish switch creates the 0.1.0 preview release once; change the version before publishing a subsequent release. These builds are unsigned: they are not notarized by Apple or signed by Microsoft. This early release does not claim certified installers. Python source launch is available above.
 
 ## First hardware test
 
