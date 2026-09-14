@@ -1,6 +1,11 @@
 name: Build desktop apps
 on:
   workflow_dispatch:
+    inputs:
+      publish:
+        description: Publish version 0.1.0 as a public preview release
+        type: boolean
+        default: false
 permissions:
   contents: read
 jobs:
@@ -17,7 +22,57 @@ jobs:
       - run: python -m pip install . pyinstaller==6.19.0
       - run: python -m unittest discover -s tests
       - run: python -m PyInstaller --noconfirm --windowed --name TTL-Servo-Studio --collect-data ttl_servo_studio --add-data "LICENSE:." --add-data "THIRD_PARTY_NOTICES.md:." run.py
+      - name: Package macOS app (preserve executable permissions)
+        if: runner.os == 'macOS'
+        run: |
+          mkdir -p packages
+          ditto -c -k --sequesterRsrc --keepParent dist/TTL-Servo-Studio.app packages/TTL-Servo-Studio-macOS.zip
+      - name: Package Windows app
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force packages
+          Compress-Archive -Path dist/TTL-Servo-Studio -DestinationPath packages/TTL-Servo-Studio-Windows.zip
+      - name: Package Linux app
+        if: runner.os == 'Linux'
+        run: |
+          mkdir -p packages
+          tar -czf packages/TTL-Servo-Studio-Linux.tar.gz -C dist TTL-Servo-Studio
       - uses: actions/upload-artifact@v4
         with:
           name: TTL-Servo-Studio-${{ matrix.os }}
-          path: dist/
+          path: packages/
+          if-no-files-found: error
+
+  release:
+    if: inputs.publish
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: TTL-Servo-Studio-*
+          path: packages
+          merge-multiple: true
+      - name: Publish preview downloads
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_COMMIT: ${{ github.sha }}
+        run: |
+          cat > release-notes.md <<'NOTES'
+          Created by Mehrdad Farimani.
+
+          Standalone desktop apps: Python installation is not required.
+
+          - Windows x64: extract the Windows ZIP and run TTL-Servo-Studio.exe inside the folder. Keep the bundled _internal folder beside it.
+          - macOS Apple Silicon: extract the macOS ZIP and open TTL-Servo-Studio.app.
+          - Linux x64: extract the tar.gz and run TTL-Servo-Studio inside its folder.
+
+          These preview builds are unsigned and the Mac app is not notarized. Intel Mac users can use the Python source launcher documented in the README.
+
+          SC09 hardware has been tested on macOS. Windows hardware and SCS0009 physical validation remain pending. Choose the exact servo model before movement.
+          NOTES
+          gh release create v0.1.0 packages/* --target "$RELEASE_COMMIT" --title "TTL Servo Studio 0.1.0 — Windows and macOS preview" --notes-file release-notes.md --prerelease
